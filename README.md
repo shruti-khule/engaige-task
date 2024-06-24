@@ -16,8 +16,8 @@ This project extracts text from a collection of PDF documents, processes it, sto
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-repo/pdf-text-retrieval.git
-   cd pdf-text-retrieval
+   git clone https://github.com/shruti-khule/engaige-task.git
+   cd engaige-task
 
 ## Code Workflow
 
