@@ -1,47 +1,67 @@
-# PDF Text Retrieval and Summarization
-
-This project extracts text from a collection of PDF documents, processes it, stores it in a vector database, and retrieves relevant passages based on a user query. The retrieved passages are then summarized to provide a coherent response.
+# PDF Text Retrieval and Summarization  
 
 ## Requirements
+- PyMuPDF (fitz)
+- ChromaDB
+- sentence_transformers
+- transformers
 
-- Python 3.6+
-- PyMuPDF
-- SentenceTransformers
-- FAISS
-- Transformers
-- numpy
-- re
+```bash
+pip install PyMuPDF chromadb sentence-transformers transformers
+```
+- `./chroma`: Directory where the ChromaDB is persisted.
 
-## Installation
+## Functions
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/shruti-khule/engaige-task.git
-   cd engaige-task
+### `extract_text_from_pdfs(pdf_paths)`
 
-## Code Workflow
+- Extracts text from a list of PDF files. 
 
-1. Text Extraction
-- The extract_text_from_pdf function reads the text content from each page of the PDF files. 
-- It uses the PyMuPDF library (fitz) to open the PDF and iterate through each page. 
-- The function can also filter out pages that contain specific keywords
 
-2. Text Splitting
-- split_text_into_sections function splits the text into smaller, manageable sections. 
-- This uses regular expressions that match different numbering schemes (e.g., "1 ", "1.1 ", "a)"). 
+### `split_text_into_sections(text, model)`
 
-3. Vectorization
-- Each section is converted into a numerical vector representation using a pre-trained model from the SentenceTransformers library. 
+- Splits the extracted text into sections based on regular expression patterns. 
+- encodes these sections into vectors using a sentence transformer model (all-MiniLM-L6-v).
 
-4. Indexing
-- The vectorized sections are stored in a FAISS (Facebook AI Similarity Search) index. 
 
-5. Query Handling
-- It vectorizes the query text and searches the FAISS index for the most similar text sections. 
-- The retrieve_relevant_passages function handles this process, returning a list of relevant text sections.
+### `create_vector_db(sections, vectors, persist_directory)`
 
-6. Summarization
-- The summarize_passages function uses a summarization model from the Transformers library ( "facebook/bart-large-cnn") to condense these sections into shorter summaries. 
+- Creates a vector database using ChromaDB to store document sections and their corresponding vector embeddings.
+
+
+### `vectorize_query(query, model)`
+
+- Encodes a query string into a vector using the same model used for section encoding.
+
+
+### `retrieve_relevant_passages(query, collection, model, top_k=5)`
+
+- Retrieves the most relevant passages from the database based on the query vector.
+
+
+### `summarizer`
+
+- A pre-loaded Hugging Face pipeline for summarization, (facebook/bart-large-cnn)"
+
+
+### `clean_passages(passages)`
+
+- Cleans the retrieved passages.
+
+
+### `summarize_passages(cleaned_passages)`
+
+Summarizes the cleaned passages using the pre-loaded summarization model.
+
+
+### `answer_query(query, collection, model)`
+
+- Processes a query by retrieving relevant passages, cleaning them, and summarizing the result.
+
+To run the script:
+1. Populate the `pdf_paths` list with the paths to the PDF files.
+2. Execute the script. This will automatically extract text, split it into sections, create a vector database, and allow querying based on a specified example query.
+
 
 ### Potential Improvements
 - Detailed text Preprocessing methods- removing stopwords, special characters
